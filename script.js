@@ -91,7 +91,8 @@ const progressBar = document.querySelector(".splash-progress__bar");
       0.1,
       10000
     );
-    camera.position.set(0, 0, 200);
+    // Sposta la camera più a destra all'inizio
+    camera.position.set(0, 0, 200); // era (0, 0, 200)
 
     renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -234,6 +235,14 @@ const progressBar = document.querySelector(".splash-progress__bar");
       const speed = phase2Started ? 1 : PHASE1_SPEEDUP;
       const delta = rawDelta * speed;
       vtime += delta;
+
+      // Movimento camera orizzontale solo durante fase 1
+      if (!phase2Started) {
+        // Velocità movimento camera (regola questo valore per più veloce/lento)
+        const cameraSpeed = 15;
+        camera.position.x -= cameraSpeed * delta;
+      }
+
       updateParticles(delta);
       if (vtime > 10 && !galaxySystem) createGalaxyCluster();
       if (vtime > 15 && !nebula) createNebula();
