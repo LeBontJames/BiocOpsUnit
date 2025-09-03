@@ -1,0 +1,1461 @@
+/* Reset base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  background-color: #000;
+  overflow-x: hidden;
+}
+
+/* ================== */
+/* SPLASH SCREEN */
+/* ================== */
+.third-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #222; /* sfondo scuro differente */
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.third-section h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #ff4d6d;
+}
+
+.third-section p {
+  font-size: 18px;
+  color: #fff;
+}
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(0, 0, 0) no-repeat center center;
+  background-size: contain;  /* mostra tutta l’immagine */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  --splash-upshift: 90px; /* ⇦ alza tutto di questa misura */
+  opacity: 1;                               /* NEW */
+  transition: opacity 1s ease, filter 1s ease; /* NEW */
+  overflow: hidden;      /* 👈 aggiungi */
+  touch-action: none;    /* 👈 blocca scroll/touch */
+}
+
+.splash-logo {
+  width: 600px;
+  height: auto;
+  animation: splashZoom 2s ease-in-out forwards;
+  filter: drop-shadow(0 0 15px rgba(119, 28, 119, 0.5));
+}
+/* stato finale: 1 secondo di dissolvenza (con un pizzico di blur) */
+.splash-screen.is-fading {                   /* NEW */
+  opacity: 0;
+  filter: blur(6px);
+}
+
+
+@keyframes splashZoom {
+  0% {
+    transform: translateY(calc(-1 * var(--splash-upshift))) scale(0);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(calc(-1 * var(--splash-upshift))) scale(0.65);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(calc(-1 * var(--splash-upshift))) scale(0.62);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(-1 * var(--splash-upshift))) scale(0.6);
+    opacity: 1;
+  }
+}
+
+
+/* Posizioniamo la seconda immagine esattamente dove sta la prima */
+
+.splash-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% - var(--splash-upshift))) scale(0);
+  width: min(80vw, 600px);
+  height: auto;
+  opacity: 0;
+  filter: drop-shadow(0 0 15px rgba(119, 28, 119, 0.3));
+  transform-origin: center center;
+  will-change: transform;
+
+  /* prima zoom centrato, poi rotazione */
+  animation:
+    splashZoomCentered 2s ease-in-out 1s forwards,
+    ringSpin           5s linear infinite 1s;
+}
+
+
+/* Zoom mantenendo la centratura assoluta */
+@keyframes splashZoomCentered {
+  0%   { transform: translate(-50%, calc(-50% - var(--splash-upshift))) scale(0);    opacity: 0; }
+  30%  { transform: translate(-50%, calc(-50% - var(--splash-upshift))) scale(1.15); opacity: 1; }
+  70%  { transform: translate(-50%, calc(-50% - var(--splash-upshift))) scale(1.12); opacity: 1; }
+  100% { transform: translate(-50%, calc(-50% - var(--splash-upshift))) scale(1.1);  opacity: 1; }
+}
+
+/* Rotazione continua mantenendo la scala a 0.6 */
+@keyframes ringSpin {
+  0%   { transform: translate(-50%, calc(-50% - var(--splash-upshift))) scale(1.1) rotate(0deg); }
+  100% { transform: translate(-50%, calc(-50% - var(--splash-upshift))) scale(1.1) rotate(360deg); }
+}
+
+
+/* Contenitore barra */
+.splash-progress {
+  position: absolute;
+  bottom: 8px;        /* distanza dal bordo basso */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;          /* larghezza barra */
+  height: 12px;        /* altezza barra */
+  background: rgba(255, 255, 255, 0.082);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+/* Barra interna animata */
+.splash-progress__bar {
+  height: 100%;
+  width: 0%;
+  background: url("BarBackground.png") repeat-x; /* ripetuta in orizzontale */
+  background-size: cover;                 /* oppure contain / auto */
+  border-radius: 1px;
+  animation: splashLoading 5s linear forwards;
+  animation-delay: 1s; /* parte nello stesso momento della rotazione del ring */
+}
+
+@keyframes splashLoading {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+.splash-text {
+  position: absolute;
+  bottom: 25px;              /* un po’ sopra la barra (che sta a 40px) */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 15px;
+  font-weight: 400;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(0,0,0,0.6);
+  opacity: 0;
+  white-space: nowrap;       /* 👈 non va mai a capo */
+  animation: splashTextFade 0.8s ease-in-out 1s forwards,
+             splashTextBounce 1.5s ease-in-out 0s infinite;
+}
+
+/* Animazione: entra con fade-in poco dopo l’inizio */
+@keyframes splashTextFade {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+/* piccolo bounce verticale */
+@keyframes splashTextBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-6px); }
+}
+
+
+/* LOADING EFFECT */
+.loading-text {
+  position: absolute;
+  bottom: 50px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ================== */
+/* NAVBAR */
+/* ================== */
+.navbar {
+  width: 100%;
+  height: 80px;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0d0d0d52;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 0.5px solid #fffcfc60;
+  opacity: 0;
+  animation: navbarShow 1s ease-in-out 3.5s forwards;
+}
+
+@keyframes navbarShow {
+  0% { 
+    opacity: 0; 
+    transform: translateY(-100%);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+ 
+.logo {
+  height: 0px;
+  width: auto;
+  display: flex;
+  align-items: center;
+}
+.hero-logo-wrap { position: relative; display: inline-block; }
+.hero-logo { display: block; width: 100%; height: auto; will-change: transform; }
+.logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  opacity: 0;
+  animation: logoSlideIn 1s ease-out 4s forwards;
+}
+
+/* ===== Scroll Hint ===== */
+.scroll-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+  opacity: 0.8;
+  animation: bounce 1.5s infinite;
+  pointer-events: none; /* non blocca lo scroll */
+  letter-spacing: 2px;
+
+  
+}
+.scroll-hint span {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.205); /* nero semitrasparente */
+  padding: 6px 12px;              /* spazio interno intorno al testo */
+  border-radius: 6px;             /* angoli leggermente arrotondati */
+  white-space: nowrap;     /* ❗️ obbliga il testo a restare su una sola riga */
+}
+/* animazione “bounce” */
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-8px); }
+}
+
+
+@keyframes logoSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(6) translate(-50px, 200px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+/* Menu desktop */
+.nav-links {
+  display: flex;
+  gap: 60px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bolder;
+  opacity: 0;
+  animation: menuFadeIn 0.8s ease-in-out 4.5s forwards;
+  z-index: 2000; /* sopra la hero e sopra tutto */
+}
+
+@keyframes menuFadeIn {
+  0% { 
+    opacity: 0; 
+    transform: translateX(50px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0);
+  }
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #ff4d6d;
+}
+
+/* CTA */
+.cta {
+  background: none;
+  border: 2px solid #fff;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  opacity: 0;
+  animation: ctaFadeIn 0.8s ease-in-out 4.7s forwards;
+}
+
+@keyframes ctaFadeIn {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.8);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+}
+
+.cta:hover {
+  background: #ff4d6d;
+  border-color: #ff4d6d;
+  transform: scale(1.05);
+}
+
+/* Hamburger hidden su desktop + stile base icona a 2 linee */
+.hamburger {
+  display: none;          /* resta nascosta su desktop */
+  position: relative;
+  width: 40px;            /* ✔ più lunga */
+  height: 16px;           /* distanza verticale tra le 2 linee */
+  cursor: pointer;
+  font-size: 0;           /* nasconde l’eventuale “☰” rimasto */
+  line-height: 0;
+  color: #fff;
+}
+
+/* Le due linee */
+.hamburger::before,
+.hamburger::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;            /* ✔ più sottili */
+  background: #fff;
+  border-radius: 2px;
+}
+.hamburger::before { top: 0; }
+.hamburger::after  { bottom: 0; }
+
+/* piccolo feedback al tocco/hover */
+.hamburger:active { transform: scale(0.98); }
+
+/* ================== */
+/* HERO SECTION */
+/* ================== */
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  padding-top: 0px;
+  opacity: 0;
+  animation: heroShow 1s ease-in-out 4s forwards;
+  /* Sfondo con immagine */
+  background: url("BackM.png") no-repeat center bottom;
+  background-size: cover;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.048); /* scurisce lo sfondo */
+  z-index: 0;
+}
+.hero > * {
+  z-index: 1; /* fa stare i bottoni sopra l’overlay */
+}
+@keyframes heroShow {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.hero h1 {
+  font-family: 'Brush Script MT', cursive;
+  font-size: 80px;
+  color: #020101;
+  z-index: 1;
+  text-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+  animation: titleGlow 2s ease-in-out infinite alternate;
+}
+.hero-logo {
+  max-width: 1130px;   /* riduci la larghezza massima */
+  width: 100%;        /* mantiene proporzioni responsive */
+  height: auto;
+  transform: translateY(-380px) translateX(-620px); /* sposta verso l’alto */
+  opacity: 0.9;
+
+}
+@keyframes titleGlow {
+  0% { text-shadow: 0 0 20px rgba(255, 77, 109, 0.5); }
+  100% { text-shadow: 0 0 30px rgba(255, 77, 109, 0.8); }
+}
+
+/* ================== */
+/*<!--Css animazione stelle--> */
+/* ================== */
+/* ===== STARFIELD nella HERO ===== */
+.hero {
+  position: relative; /* per ancorare il posizionamento assoluto interno */
+}
+
+.hero .starfield {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;    /* non blocca click/scroll */
+  z-index: 0;              /* 👈 desktop: dietro */
+}
+
+.hero .star {
+  position: absolute;
+  width: var(--size, 2px);
+  height: var(--size, 2px);
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff7c 0 40%, transparent 50%);
+  box-shadow: 0 0 10px rgba(255,255,255,0.6);
+  opacity: 0.85;
+  animation: twinkle var(--dur, 2.2s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: opacity;
+  animation-play-state: var(--play, running);
+  
+}
+
+.hero .starfield.paused .star {
+  animation-play-state: paused;
+}
+/* Bagliore giallo dietro alle stelle (sincronizzato con twinkle) */
+.hero .star::after {
+  content: "";
+  position: absolute;
+  /* un alone un po' più grande della stella */
+  inset: -6px;
+  border-radius: 50%;
+  /* gradiente giallo che sfuma verso l’esterno */
+  background: radial-gradient(circle,
+              rgba(224, 223, 208, 0.99) 0 12%,
+              rgba(255, 230, 0, 0.0) 30%);
+  opacity: 0;
+  filter: blur(2px);
+  /* stessa durata e stesso delay della stella per rimanere in sync */
+  animation: starGlow var(--dur, 2.6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: opacity, transform;
+}
+
+/* Croce luminosa dietro la stella */
+.hero .star::before {
+  content: "";
+  position: absolute;
+  inset: -7px; /* più grande della stella */
+  background: 
+    linear-gradient(to right, transparent 48%, rgba(255,255,200,0.9) 50%, transparent 52%),
+    linear-gradient(to bottom, transparent 48%, rgba(255,255,200,0.9) 50%, transparent 52%);
+  opacity: 0;
+  filter: blur(1px);
+  animation: starCross var(--dur, 2.6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: opacity, transform;
+  pointer-events: none;
+  z-index: -1; /* resta dietro alla stella */
+}
+
+@keyframes starCross {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.2);
+  }
+}
+/* Meno “respiro” e repaint in lowperf */
+.lowperf .hero .star {
+  /* stessa animazione ma più lunga = meno variazioni per secondo */
+  animation-duration: calc(var(--dur, 2.6s) * 1.6);
+  /* ombra più leggera = meno raster work */
+  box-shadow: 0 0 6px rgba(255,255,255,0.35);
+}
+
+/* Se hai aggiunto l'alone giallo ::after, alleggeriscilo in lowperf */
+.lowperf .hero .star::after {
+  opacity: 0.6;               /* picco più basso */
+  filter: blur(1.5px);        /* meno blur = meno costo */
+}
+
+
+/* Piccola “respirazione” del bagliore in sincronia col picco */
+@keyframes starGlow {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.splash-screen .starfield{
+  position:absolute; inset:0;
+  z-index:3; pointer-events:none;
+}
+
+/* Stelle SPLASH: twinkle in fase + nascita (dal centro) schedulata fino alla fine */
+.splash-screen .star{
+  position:absolute;
+  width:var(--size,2px); height:var(--size,2px); border-radius:50%;
+  background: radial-gradient(circle, #ffffff7c 0 40%, transparent 50%);
+  box-shadow: 0 0 10px rgba(255,255,255,0.6);
+  z-index: 1;
+
+  /* finché non “nascono” rimangono invisibili */
+  visibility: hidden;
+  opacity: 0;
+  transform: translate(var(--fromX,0px), var(--fromY,0px)) scale(0.7);
+  will-change: transform, opacity;
+
+  /* 1) Twinkle sempre in fase con la hero, base = var(--twinkleBase)
+     2) Nascita singola con ritardo assoluto var(--introDelayTotal) */
+  animation:
+    twinkle var(--dur,2.2s) ease-in-out infinite,
+    splashStarIn var(--starInDur,0.9s) cubic-bezier(.2,.75,.2,1) var(--introDelayTotal,1s) both;
+  animation-delay: calc(var(--twinkleBase,1s) + var(--delay,0s)), var(--introDelayTotal,1s);
+}
+
+
+/* ingresso radiale dal centro */
+@keyframes splashStarIn{
+  0%   { visibility: visible; opacity:0; transform: translate(var(--fromX,0px), var(--fromY,0px)) scale(0.7); }
+  100% { visibility: visible; opacity:1; transform: translate(0,0) scale(1); }
+}
+/* SCIA come elemento figlio, così non confligge con ::before/::after */
+.splash-screen .star > .trail {
+  position: absolute;
+  left: 50%; top: 50%;
+  height: 2px;
+  width: 0; /* parte da 0 */
+  transform: translate(-50%, -50%) rotate(var(--introAngle, 0deg));
+  transform-origin: right center; /* si allunga "dietro" la stella */
+  background: linear-gradient(to left,
+              rgba(255,255,255,0.95) 0%,
+              rgba(255,255,255,0.0) 60%);
+  filter: blur(1.5px);
+  pointer-events: none;
+  opacity: 0;
+  z-index: -1; /* stai dietro al puntino della stella */
+
+  /* stessa timeline della nascita */
+  animation: splashTrail var(--starInDur, 0.9s) ease-out var(--introDelayTotal, 1s) both;
+}
+
+
+/* la scia si estende e poi svanisce */
+@keyframes splashTrail {
+  0%   { opacity: 1; width: 0; }
+  30%  { opacity: 1; width: var(--trailMax, 42px); }
+  100% { opacity: 0; width: 0; }
+}
+
+/* alone giallo: stessa fase della hero */
+.splash-screen .star::after{
+  content:"";
+  position:absolute; inset:-6px; border-radius:50%;
+  background: radial-gradient(circle, rgba(224,223,208,0.99) 0 12%, rgba(255,230,0,0) 30%);
+  opacity:0; filter:blur(2px);
+  animation: starGlow var(--dur,2.6s) ease-in-out var(--delay,0s) infinite;
+  will-change: opacity, transform;
+  animation-delay: calc(var(--twinkleBase,1s) + var(--delay,0s));
+}
+/* croce luminosa: stessa fase della hero */
+.splash-screen .star::before{
+  content:""; position:absolute; inset:-7px;
+  background:
+    linear-gradient(to right, transparent 48%, rgba(255,255,200,0.9) 50%, transparent 52%),
+    linear-gradient(to bottom, transparent 48%, rgba(255,255,200,0.9) 50%, transparent 52%);
+  opacity:0; filter:blur(1px);
+  animation: starCross var(--dur,2.6s) ease-in-out var(--delay,0s) infinite;
+  will-change: opacity, transform; pointer-events:none; z-index:-1;
+   animation-delay: calc(var(--twinkleBase,1s) + var(--delay,0s));
+   z-index: -1; 
+}
+
+
+
+/* assicura che logo/ring/testo stiano sopra le stelle */
+.splash-logo { position:relative; z-index:2; }
+.splash-ring, .splash-text, .splash-progress{  z-index:2; }
+
+/* ===== Splash: fase 1 (intro Three.js) / fase 2 (splash esistente) ===== */
+.splash-screen { position: fixed; inset: 0; }
+
+.splash-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 1;           /* dietro la fase 2 */
+  overflow: hidden;
+  background: #000;     /* fallback */
+}
+
+.three-mount, .three-mount canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* La fase 2 parte “spenta” e con animazioni in pausa */
+.splash-phase2 {
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+
+  /* ⬇️ questi 4 fanno tornare il layout identico a prima */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* ⬇️ assicura che il wrapper prenda tutto lo spazio della splash */
+  width: 100%;
+  height: 100%;
+}
+.splash-phase2 * { animation-play-state: paused !important; }
+
+/* Quando JS aggiunge .phase2, la fase 2 entra e riparte tutto */
+.splash-screen.phase2 .splash-phase2 {
+  opacity: 1;
+  pointer-events: auto;
+}
+.splash-screen.phase2 .splash-phase2 * { animation-play-state: running !important; }
+
+/* (Opzionale) attenua un filo l’intro quando entra la fase 2 */
+.splash-screen.phase2 .splash-intro { opacity: 0.7; transition: opacity 400ms ease; }
+
+/* Nascondi la GUI di dat.GUI nella splash (rimane attiva ma invisibile) */
+.dg.ac {
+  display: none !important;
+}
+
+
+/* ================== */
+/*<!--seconda pagina scroll--> */
+/* ================== */
+.second-section {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 80px 20px;            /* spazio interno su desktop */
+  background: url("Back2.png") no-repeat center bottom / cover, #0b0b0b;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.second-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.second-content {
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+}
+
+  #section4 {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* se vuoi fullscreen */
+  overflow: hidden;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* riempie lo schermo */
+}
+
+.video-text {
+  position: absolute;
+  top: 20px;      /* distanza dall'alto */
+  left: 20px;     /* distanza da sinistra */
+  color: white;   /* colore testo */
+  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.7); /* leggibilità */
+  z-index: 2;
+}
+
+
+/* === DISCOVER: overlay + pannello full-screen da destra === */
+.discover-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+  z-index: 9998; /* sotto al pannello */
+}
+/* HERO: video full-screen come sfondo */
+.discover-hero {
+  background: #000;
+}
+.discover-panel {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;          /* importante: niente scroll qui */
+  z-index: 9999;
+  transform: translateX(100%);
+  transition: transform .45s cubic-bezier(.2,.75,.2,1);
+}
+
+.discover-panel[aria-hidden="false"] {
+  transform: translateX(0);      /* pannello visibile */
+}
+
+.discover-overlay[aria-hidden="false"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* bottone chiudi */
+.discover-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform .15s ease, background-color .2s ease, border-color .2s ease;
+}
+
+.discover-close:hover { transform: scale(1.06); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); }
+.discover-close:active { transform: scale(0.98); }
+
+/* Bottone Skip con stessa grafica della X in basso a dx*/
+.discover-skip {
+  position: absolute;
+  bottom: 20px;               /* in basso */
+  right: 20px;                /* in basso a destra */
+  width: 64px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform .15s ease, background-color .2s ease, border-color .2s ease;
+}
+.discover-skip:hover  { transform: scale(1.06); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); }
+.discover-skip:active { transform: scale(0.98); }
+
+/* Area che scorre all'interno del pannello */
+.discover-scroll {
+  position: absolute;
+  inset: 0;
+  height: 100dvh;            /* migliore su mobile rispetto a 100vh */
+  overflow-y: auto;          /* scroll solo qui */
+  overscroll-behavior: contain;  /* evita che lo scroll “passi” alla pagina sotto */
+  scroll-snap-type: y mandatory; /* snap per sezioni full-screen (opzionale ma consigliato) */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ogni sezione occupa tutto lo schermo */
+.discover-section {
+  position: relative;
+  min-height: 100dvh;
+  scroll-snap-align: start;  /* combacia esattamente a ogni sezione */
+}
+
+/* contenuto interno scrollabile */
+.discover-inner {
+  padding: clamp(16px, 3.5vw, 40px);
+  overflow: auto;
+}
+.discover-inner h2 {
+  font-size: clamp(28px, 4.5vw, 44px);
+  margin: 56px 0 12px;
+  color: #ff4d6d;
+  text-shadow: 0 0 24px rgba(255, 77, 109, 0.35);
+}
+.discover-inner p {
+  font-size: clamp(14px, 2vw, 18px);
+  line-height: 1.6;
+  opacity: .9;
+}
+.discover-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.discover-hero-content {
+  position: relative; z-index: 1;
+  display: grid; place-content: center;
+  height: 100%;
+  padding: clamp(20px, 5vw, 60px);
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0,0,0,.5);
+}
+.scroll-hint {
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  font-size: .9rem; opacity: .8;
+}
+/* Sezione successiva (esempio) */
+.discover-more {
+  background: #0b0b0b;
+  color: #fff;
+  display: grid; place-items: center;
+  padding: clamp(24px, 6vw, 72px);
+}
+.discover-more .container {
+  max-width: 1100px; width: 100%;
+}
+
+/* Quando pannello aperto, la pagina sotto non scorre (già presente) */
+body.discover-open { overflow: hidden; }
+/* blocca lo scroll della pagina quando il pannello è aperto */
+body.discover-open { overflow: hidden; }
+
+
+
+
+
+
+
+/* ================== */
+/* PAGINE INTERNE STYLING */
+/* ================== */
+header {
+  background: #0d0d0da2;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  border-bottom: 2px solid #fffcfc9c;
+}
+
+header h1 {
+  color: #fff;
+  font-family: 'Brush Script MT', cursive;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+header nav {
+  text-align: center;
+}
+
+header nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 20px;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+header nav a:hover {
+  color: #ff4d6d;
+}
+
+main {
+  margin-top: 150px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+main h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #ff4d6d;
+}
+
+main p {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #333;
+  margin-top: 40px;
+}
+
+/* ================== */
+/* RESPONSIVE STYLES */
+/* ================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .hero h1 {
+    font-size: 60px;
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .cta {
+    padding: 6px 12px;
+  }
+
+  .logo {
+    height: 0px;
+  }
+
+  .splash-logo {
+    width: 350px;
+  }
+}
+/* === SCROLL A PAGINE INTERE (SNAP) === */
+/* Il contenitore dello scroll (body) “aggancia” le sezioni */
+html, body {
+  height: 100%;
+}
+body {
+  scroll-snap-type: y mandatory;  /* aggancia in verticale */
+  scroll-behavior: smooth;        /* scorrimento morbido */
+  overscroll-behavior-y: contain; /* evita rimbalzi su mobile */
+}
+
+/* Ogni sezione “target” occupa l’intero schermo e si allinea all’inizio */
+.section-full {
+  /* viewport moderne “dinamiche” (niente sfori con le barre) */
+  height: 100svh;
+  min-height: 100dvh;
+  max-height: 100lvh;
+
+  scroll-snap-align: start;  /* quando arrivi, si ferma qui */
+  scroll-snap-stop: always;  /* evita di saltare due sezioni in un colpo */
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+  /* altezza header mobile già 70px nel tuo CSS */
+  .navbar {
+     height: 70px;
+     position:fixed;
+     border-bottom: 0px solid #fffcfc60;
+     background: transparent !important;
+    }                                      /* c'è già */
+  .logo {opacity: 0;}
+  .hero {
+    height: 100svh;
+    min-height: 100dvh;
+    max-height: 100lvh;
+    background: url("BackMmobile.png") no-repeat center top;   /* c'è già */
+    background-size:cover;                                       /* c'è già */
+    position: relative;                                           /* ok */
+    padding-top: 0px; /* 70 header + 16 di aria per non coprire */
+    margin-top: 0;  /* niente offset */
+  }
+  .hero .starfield {
+    z-index: 200; /* abbastanza alto per superare logo e hint */
+  }
+  /* LOGO fisso al viewport, centrato sotto la navbar */
+  .hero-logo {
+    transform-origin: center center; /* così scala senza spostarsi */
+    position: fixed;     /* <- era absolute */
+    top: -1%;           /* 70 header + 16px */
+    left: 53%;
+    transform: translateY(-20px);  /* override del transform desktop */
+    width: min(60vw, 200px);
+    height: auto;
+    
+    z-index: 2001;       /* sopra la hero e sotto/sopra la navbar a scelta */
+    will-change: transform; /*regola per rotazione logo */
+  }
+  
+  /* Alcuni browser vogliono lo snap sul tag html, altri su body: mettilo su entrambi */
+  html {
+    scroll-snap-type: y mandatory;
+    /* Diciamo al browser che il top visibile è 70px più sotto (altezza navbar) */
+    scroll-padding-top: 0px;
+    overscroll-behavior-y: contain;
+  }
+  body {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 70px;      /* allinea perfettamente l’inizio sezione sotto la navbar */
+    overscroll-behavior-y: contain;/* evita “rimbalzi” a fine pagina */
+    touch-action: pan-y;           /* aiuta i gesti verticali */
+  }
+  .section-full {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;  /* impedisce di saltare oltre più sezioni con uno swipe */
+    height: 100svh;
+    min-height: 100dvh;
+    max-height: 100lvh;
+  }
+  .second-section {
+    background: url("Back2mobile.png") no-repeat center center;
+    background-size: cover;   /* riempie tutta la sezione */
+  }
+  .third-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: url("Back3mobile.PNG") no-repeat center center / cover, #222;
+    border-top: 0px solid rgba(255,255,255,0.2);
+  }
+  /* === GEO ICON + MODAL on HERO === */
+.geo-icon {
+  position: absolute;
+  top: 26%;     /* distanza dal bordo superiore */
+  left: 26%;    /* distanza dal bordo sinistro */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0);
+  border: 1px solid rgba(255, 255, 255, 0);
+  color: #ffffffdc;
+  cursor: pointer;
+  backdrop-filter: blur(0px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0);
+  z-index: 3003;
+  transition: transform 0.18s ease, background-color 0.18s ease, opacity 0.18s ease;
+  animation: bounce 1.5s infinite;
+}
+/* Animazione bounce per geo-icon */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+.geo-icon:active { transform: scale(0.97); }
+
+.geo-message {
+  position: fixed;
+  top: 70px; /* distanza dalla parte alta, regola se serve */
+  left: 24px; /* allineato con l'icona in alto a sinistra */
+  transform: translateX(-50%); /* 👈 Centra orizzontalmente rispetto a left */
+  background: rgba(0,0,0,0.205);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 4000;
+}
+
+.geo-message.show {
+  opacity: 1;
+   animation: 
+    zoomInTooltip 0.3s ease-out forwards,
+    bounce 2s infinite; /* parte dopo lo zoom */
+    transform: translateX(-50%);   /* mantieni centratura orizzontale */
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes zoomInTooltip {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.8); /* più piccolo e trasparente */
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);   /* grandezza normale */
+  }
+}
+
+/* Modal overlay */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* niente overlay scuro */
+  padding: 16px;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+.video-modal.open { 
+  display: flex;
+  opacity: 1;
+  }
+
+  /* durante la misura: niente trasformazioni/animazioni */
+.video-modal .video-content.measuring{
+  transform: none !important;
+  animation: none !important;
+}
+.video-modal.open .video-content,
+.video-modal.closing .video-content{
+  transition: none !important;
+}
+.video-content {
+  position: relative;
+  width: min(60vw, 400px);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.45); /* meno pesante del 0 20px 60px */
+  will-change: transform, opacity;
+  transform: scale(0.8) translateZ(0);      /* forza compositing GPU */
+  opacity: 0;
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* allineato all'animazione */
+  transform-origin: center center; /* default */
+
+}
+
+/* mostra il modal ma senza animare ancora */
+.video-modal.preopen { 
+  display: flex;
+  opacity: 0;           /* niente fade per ora */
+}
+.video-modal.preopen .video-content {
+  opacity: 0;
+  transform: scale(0.3); /* stato iniziale coerente con @keyframes */
+  animation: none !important; /* blocca animazioni finché non siamo pronti */
+}
+
+
+/* Zoom-in leggermente più lento */
+.video-modal.open .video-content {
+  animation: zoomIn 0.7s ease-out forwards; 
+}
+
+/* Nuovo zoom-out alla chiusura */
+.video-modal.closing .video-content {
+  animation: zoomOut 0.5s ease-in forwards;
+}
+
+
+.geo-media { 
+  display: block; 
+  width: 100%;
+  height: auto;
+  /* Il video stesso su un layer GPU */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+ }
+
+@keyframes zoomIn{
+  from { transform: scale(0.3); opacity: 1; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+@keyframes zoomOut{
+  from { transform: scale(1);   opacity: 1; }
+  to   { transform: scale(0.3); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .geo-icon, .close-btn { transition: none; }
+}
+
+/* Pausa animazioni quando il modal è aperto */
+body.modal-open .hero .star,
+body.modal-open .hero .star::before,
+body.modal-open .hero .star::after {
+  animation-play-state: paused;
+}
+
+body.modal-open .geo-icon,
+body.modal-open .side-tab--left,
+body.modal-open .side-tab--right,
+body.modal-open .scroll-hint {
+  animation-play-state: paused;
+}
+/* CROCE dietro la stella: ora ruota con --cross-rot e pulsa con starCross */
+.hero .star::before,
+.splash-screen .star::before{
+  content:""; position:absolute; inset:-7px;
+  background:
+    linear-gradient(to right, transparent 48%, rgba(255,255,200,0.9) 50%, transparent 52%),
+    linear-gradient(to bottom, transparent 48%, rgba(255,255,200,0.9) 50%, transparent 52%);
+  opacity:0; filter:blur(1px);
+  /* 👇 nuova riga: rotazione per-stella */
+  transform: rotate(var(--cross-rot, 0deg)) scale(1);
+  transform-origin: 50% 50%;
+  animation: starCross var(--dur,2.6s) ease-in-out var(--delay,0s) infinite;
+  will-change: opacity, transform; pointer-events:none; z-index:-1;
+}
+
+/* keyframes aggiornati: includono la rotazione, animano solo lo scale/opacity */
+@keyframes starCross{
+  0%, 100% { opacity: 0; transform: rotate(var(--cross-rot,0deg)) scale(0.85); }
+  50%      { opacity: 1; transform: rotate(var(--cross-rot,0deg)) scale(1.2);  }
+}
+
+  /* === STICKY SHOP e DISCOVER BUTTONS — S in alto, lettere in colonna === */
+/* Stile base */
+  .side-tab {
+    position: fixed;
+    top: 50%;                       /* centro verticale */
+    transform: translateY(-50%);    /* centra solo in verticale */
+    z-index: 3002;
+
+    writing-mode: vertical-lr;
+    -webkit-writing-mode: vertical-lr;
+    text-orientation: upright;
+
+    background: rgba(0,0,0,0.205);
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    padding: 10px 6px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+    opacity: 0.8;
+  }
+
+  /* Sinistra */
+  .side-tab--left {
+    left: 1px;
+    animation: bounce-left 1.5s infinite;
+  }
+
+  /* Destra */
+  .side-tab--right {
+    right: 1px;
+    animation: bounce-right 1.5s infinite;
+  }
+
+  .side-tab:hover {
+    background: #ff4d6d;
+    color: #fff;
+    opacity: 1;
+  }
+
+  /* Animazioni speculari */
+  @keyframes bounce-left {
+    0%,100% { transform: translateY(-50%) translateX(0); }
+    50%     { transform: translateY(-50%) translateX(4px); }   /* spinta verso destra */
+  }
+
+  @keyframes bounce-right {
+    0%,100% { transform: translateY(-50%) translateX(0); }
+    50%     { transform: translateY(-50%) translateX(-4px); }  /* spinta verso sinistra */
+  }
+  
+  .scroll-hint {
+    bottom: 3px;  /* spostalo più in alto (prima era 20px) */
+  }
+  .scroll-hint span {
+    font-size: 13px;
+  }
+/* animazione scroll mobile */
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-4px); }
+}
+
+
+  .cta { display: none; }
+  .hamburger { 
+    display: block;
+  
+  }
+
+  .video-text {
+  position: absolute;
+  top: 3px;      /* distanza dall'alto */
+  left: 5px;     /* distanza da sinistra */
+  color: white;   /* colore testo */
+  font-size: 0.6rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.7); /* leggibilità */
+  z-index: 2;
+}
+
+  /* Menu mobile nascosto */
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.76);
+    width: 200px;
+    display: none;
+    padding: 20px;
+    animation: none !important; /* niente fade-in sul mobile */
+    opacity: 1; /* sempre visibile come stato base */
+    transform: none;
+  }
+
+  .nav-links.nav-active {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 10px 0;
+    color: #fff;
+  }
+
+  /* Pagine interne mobile */
+  header h1 {
+    font-size: 28px;
+  }
+
+  header nav a {
+    margin: 0 10px;
+    font-size: 14px;
+  }
+
+  main {
+    margin-top: 120px;
+    padding: 20px 15px;
+  }
+
+  main h2 {
+    font-size: 24px;
+  }
+  
+}
+
+/* Extra small */
+@media (max-width: 480px) {
+  .navbar {
+    height: 60px;
+  }
+
+  .logo {
+    height: 35px;
+  }
+
+  .splash-logo {
+    width: 150px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .loading-text {
+    font-size: 16px;
+  }
+
+  header h1 {
+    font-size: 24px;
+  }
+
+  main h2 {
+    font-size: 20px;
+  }
+}
+/* --- OVERRIDE: dimensione splash logo --- */
+.splash-screen .splash-logo {
+  width: min(80vw, 600px);
+}
+
+@media (max-width: 1024px) {
+  .splash-screen .splash-logo { width: min(60vw, 420px); }
+}
+@media (max-width: 768px) {
+  /* più grande su mobile */
+  .splash-screen .splash-logo { width: min(75vw, 360px); }
+}
+@media (max-width: 480px) {
+  /* ancora grande sui telefoni piccoli */
+  .splash-screen .splash-logo { width: min(85vw, 320px); }
+}
+
+
+
+
+

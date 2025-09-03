@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clutch Point</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- THREE + postprocessing + controlli + dat.GUI -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+
+<!-- Shaders prima dei pass -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js" defer></script>
+
+<!-- Post-processing -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js" defer></script>
+
+<!-- Controls + GUI -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+<!-- SPLASH SCREEN -->
+<div class="splash-screen">
+  <!-- ✅ FASE 1: tua animazione three.js come sfondo -->
+  <div class="splash-intro" id="splashIntro">
+    <div id="threeMount" class="three-mount" aria-hidden="true"></div>
+  </div>
+
+  <!-- ✅ FASE 2: TUTTO il contenuto splash che avevi già -->
+  <div class="splash-phase2" id="splashPhase2">
+    <div class="starfield" id="splashStarfield" aria-hidden="true"></div>
+    <img src="logosplash.PNG" alt="ClutchPoint Logo" class="splash-logo">
+    <img src="Sbioccing Flow circolare senza scimmia.PNG" alt="Sbioccing Flow" class="splash-ring">
+    <div class="splash-text">Sbioccing'...</div>
+    <div class="splash-progress">
+      <div class="splash-progress__bar"></div>
+    </div>
+  </div>
+</div>
+
+  <div id="main-column">
+     <!-- HEADER -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="MonkeyLogo.png" alt="Logo del sito">
+    </div>
+
+  <!-- MENU DESKTOP -->
+    <nav class="nav-links">
+      <a href="#">HOME</a>
+      <a href="#">RISULTATI</a>
+      <a href="#">TORNEI</a>
+      <a href="#">PROSSIMAMENTE</a>
+      <a href="#">LIVE</a>
+    </nav>
+
+    <button class="cta">SOCIAL</button>
+
+  <!-- MENU MOBILE -->
+    <div class="hamburger" aria-label="Apri menu"></div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero section-full">
+    <a href="PaginaLoghi.html" class="hero-logo-link">
+    <img src="LogoBig/logobig2.png" class="hero-logo" alt="Logo grande">
+  </a>
+
+  <!-- Bottone SHOP sticky -->
+  <a href="#shop" class="side-tab side-tab--left"><span>SHOP</span></a>
+  <a href="#info" class="side-tab side-tab--right"><span>DISCOVER</span></a>
+
+  <!-- GEO ICON on HERO -->
+<!-- Icona 1 (quella che avevi già) -->
+<button
+  class="geo-icon"
+  id="geoBtn"
+  aria-label="Apri video geolocalizzazione"
+  style="top:26%; left:26%;"
+  data-video="video.mp4"
+  data-message="Colombia, Sud America">
+  <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+    <path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>
+  </svg>
+</button>
+
+<!-- Icona 2 (nuova) — CORRETTA -->
+<button
+  class="geo-icon"
+  aria-label="Apri video geolocalizzazione 2"
+  style="top:17%; left:15%;"
+  data-image="lacucina.jpeg"
+  data-message="Head Quarter"
+  data-autoclose="2000">
+  <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+    <path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>
+  </svg>
+</button>
+
+<!-- Messaggio temporaneo riutilizzato da TUTTE le icone -->
+<div id="geoMessage" class="geo-message"></div>
+  <!-- ⭐ Campo stelle SOLO nella hero -->
+    <div class="starfield" id="heroStarfield"></div>
+
+    <div class="scroll-hint" id="scrollHint">
+    <span>↓ SCROLL FOR THE COLLECTION ↓</span>
+  </div>
+  </section>
+  <!--seconda pagina scroll-->
+  <section class="second-section section-full">
+  <div class="second-content">
+  </div>
+  
+  </section>
+<!--terza pagina scroll-->
+  <section class="third-section section-full">
+  <div class="third-content"></div> 
+
+</section>
+  </div>
+</div>
+
+ 
+
+ 
+
+<!-- MODAL con GIF/VIDEO/IMMAGINE -->
+<div class="video-modal" id="geoModal" aria-hidden="true">
+  <div class="video-content" role="dialog" aria-modal="true" aria-label="Preview geolocalizzazione">
+    <video class="geo-media" autoplay muted playsinline webkit-playsinline preload="auto">
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    <img class="geo-media" src="" alt="" style="display:none">  <!-- 👈 nuovo -->
+  </div>
+</div>
+
+ <!-- DISCOVER PANEL (full-screen from right) -->
+  <div class="discover-overlay" id="discoverOverlay" aria-hidden="true"></div>
+
+  <aside class="discover-panel" id="discoverPanel" aria-hidden="true" role="dialog" aria-label="Discover">
+  <button class="discover-close" id="discoverClose" aria-label="Chiudi Discover">✕</button>
+  <!-- NUOVO: Skip 3x -->
+<button class="discover-skip" id="discoverSkip" aria-label="Salta/velocizza video a 3x">Skip</button>
+
+  
+  <!-- Scroller interno del pannello -->
+  <div class="discover-scroll">
+    <!-- Sezione 1: hero/video full screen -->
+    <section class="discover-section discover-hero">
+      <video id="discoverVideo" class="discover-video" autoplay muted playsinline preload="metadata" poster="media/poster.jpg">
+        <source src="VideoDiscover.mp4" type="video/mp4">
+        <source src="VideoDiscover.webm" type="video/webm" />
+        
+      </video>
+      <div class="video-text">Powered by NASA</div>
+      <div class="discover-hero-content">
+        
+      </div>
+    </section>
+
+    <!-- Sezione 2: NUOVA, visibile solo scorrendo dentro il pannello -->
+    <section class="discover-section discover-more">
+      <div class="container">
+        <!-- il tuo contenuto -->
+      </div>
+    </section>
+    </video>
+  </div>
+</aside>
+
+</body>
+</html>
