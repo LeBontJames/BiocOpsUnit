@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@tweenjs/tween.js": "^25.0.0",
+    "lil-gui": "^0.20.0"
+  }
+}
