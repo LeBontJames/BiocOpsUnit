@@ -1,0 +1,110 @@
+/* Burger Menu */
+.burger-menu-container {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  z-index: 10500;
+  display: none; /* Nascosto di default, mostrato solo su mobile */
+}
+
+.burger-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+}
+
+.burger-lines {
+  width: 24px;
+  height: 2px;
+  background-color: white;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.burger-lines::before,
+.burger-lines::after {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background-color: white;
+  position: absolute;
+  left: 0;
+  transition: transform 0.3s ease;
+}
+
+.burger-lines::before {
+  top: -6px;
+}
+
+.burger-lines::after {
+  top: 6px;
+}
+
+/* Animazioni per il burger menu aperto */
+.burger-lines.open {
+  background-color: transparent;
+}
+
+.burger-lines.open::before {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+
+.burger-lines.open::after {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* Menu mobile */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 70vw;
+  max-width: 300px;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
+  transform: translateX(0);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mobile-menu-item {
+  color: white;
+  text-decoration: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background-color 0.3s;
+}
+
+.mobile-menu-item:hover,
+.mobile-menu-item:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mostra il burger menu solo su mobile */
+@media (max-width: 768px) {
+  .burger-menu-container {
+    display: block;
+  }
+}

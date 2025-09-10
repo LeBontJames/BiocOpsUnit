@@ -1,0 +1,31 @@
+/* === STILI SOLO PER PAGINA LOGHI === */
+
+/* HERO nuova immagine */
+.loghi-hero {
+  background: url("BackPaginaLoghi1.jpg") no-repeat center center / cover;
+}
+
+/* Seconda sezione */
+.loghi-second {
+  background: url("BackPaginaLoghi2.jpg") no-repeat center center / cover;
+}
+
+/* Terza sezione */
+.loghi-third {
+  background: url("BackPaginaLoghi3.PNG") no-repeat center center / cover;
+}
+
+/* Versioni mobile */
+@media (max-width: 768px) {
+  .loghi-hero {
+    background: url("BackPaginaLoghi1.PNG") no-repeat center center / contain;
+  }
+
+  .loghi-second {
+    background: url("BackPaginaLoghi2.PNG") no-repeat center center / contain;
+  }
+
+  .loghi-third {
+    background: url("BackPaginaLoghi3.PNG") no-repeat center center / contain;
+  }
+}
