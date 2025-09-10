@@ -1,0 +1,12 @@
+/* Stili per mobile */
+@media (max-width: 768px) {
+  body {
+    background-image: url('/BackMmobile.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height: 100vh;
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}

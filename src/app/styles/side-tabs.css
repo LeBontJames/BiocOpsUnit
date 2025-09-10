@@ -1,0 +1,60 @@
+/* === STICKY SHOP e DISCOVER BUTTONS — S in alto, lettere in colonna === */
+/* Stile base */
+.side-tab {
+  position: fixed;
+  top: 50%;                       /* centro verticale */
+  transform: translateY(-50%);    /* centra solo in verticale */
+  z-index: 3002;
+
+  writing-mode: vertical-lr;
+  -webkit-writing-mode: vertical-lr;
+  text-orientation: upright;
+
+  background: rgba(0,0,0,0.205);
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  padding: 10px 6px;
+  border-radius: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+/* Sinistra */
+.side-tab--left {
+  left: 1px;
+  animation: bounce-left 1.5s infinite;
+}
+
+/* Destra */
+.side-tab--right {
+  right: 1px;
+  animation: bounce-right 1.5s infinite;
+}
+
+.side-tab:hover {
+  background: #ff4d6d;
+  color: #fff;
+  opacity: 1;
+}
+
+/* Animazioni speculari */
+@keyframes bounce-left {
+  0%,100% { transform: translateY(-50%) translateX(0); }
+  50%     { transform: translateY(-50%) translateX(4px); }   /* spinta verso destra */
+}
+
+@keyframes bounce-right {
+  0%,100% { transform: translateY(-50%) translateX(0); }
+  50%     { transform: translateY(-50%) translateX(-4px); }  /* spinta verso sinistra */
+}
+
+/* Stile per quando i modali sono aperti - nascondiamo i tab laterali */
+body.modal-open .side-tab--left,
+body.modal-open .side-tab--right {
+  opacity: 0;
+  pointer-events: none;
+}

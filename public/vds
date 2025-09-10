@@ -1,0 +1,38 @@
+(function () {
+  const mm = window.matchMedia("(max-width: 768px)");
+  const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (!mm.matches || prefersReduce.matches) return; // solo mobile, no RRM
+
+  const splashWrap = document.getElementById("splashStars");
+  if (!splashWrap) return;
+
+  // 🔥 QUI INSERISCI LE TUE COORDINATE MANUALI
+  const SPLASH_STARS = [
+    { x: "30%", y: "20%", size: 4 },
+    { x: "60%", y: "35%", size: 5 },
+    { x: "45%", y: "70%", size: 3 },
+    { x: "75%", y: "50%", size: 4 },
+    { x: "20%", y: "55%", size: 3 },
+  ];
+
+  const startAt = 1000; // ms: inizio rotazione ring
+  const endAt = 6000; // ms: fine splash
+  const dur = 800; // durata di ogni “shoot” (ms)
+  const n = SPLASH_STARS.length;
+  const step = (endAt - startAt) / n;
+
+  splashWrap.innerHTML = "";
+
+  SPLASH_STARS.forEach((s, i) => {
+    const el = document.createElement("div");
+    el.className = "splash-star";
+
+    el.style.setProperty("--size", (s.size || 3) + "px");
+    el.style.setProperty("--tx", `calc(${s.x} - 50%)`);
+    el.style.setProperty("--ty", `calc(${s.y} - 50%)`);
+    el.style.setProperty("--dur", dur / 1000 + "s");
+    el.style.animationDelay = (startAt + i * step) / 1000 + "s";
+
+    splashWrap.appendChild(el);
+  });
+})();
