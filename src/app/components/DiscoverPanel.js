@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 
-export default function DiscoverPanel() {
+export default function DiscoverPanel({ onOpenChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const videoRef = useRef(null);
   const panelRef = useRef(null);
@@ -114,14 +114,18 @@ export default function DiscoverPanel() {
       if (skipBtn) skipBtn.style.display = "block";
       video.playbackRate = 1.0;
       video.currentTime = 0;
-      
+
       // Assicuriamoci che il video sia pronto prima di riprodurlo
       if (video.readyState >= 3) {
         video.play().catch(() => {});
       } else {
-        video.addEventListener('canplay', () => {
-          video.play().catch(() => {});
-        }, { once: true });
+        video.addEventListener(
+          "canplay",
+          () => {
+            video.play().catch(() => {});
+          },
+          { once: true }
+        );
       }
 
       // Focus on first focusable element
@@ -138,6 +142,13 @@ export default function DiscoverPanel() {
       video.playbackRate = 1.0;
     }
   }, [isOpen]);
+
+  // Notify parent component about open state changes
+  useEffect(() => {
+    if (typeof onOpenChange === "function") {
+      onOpenChange(isOpen);
+    }
+  }, [isOpen, onOpenChange]);
 
   return (
     <>

@@ -1,7 +1,12 @@
+
 "use client";
 
 import { useEffect, useRef } from 'react';
-import Script from 'next/script';
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 
 export default function BigBangAnimation({ onComplete }) {
   const containerRef = useRef(null);
@@ -46,7 +51,7 @@ export default function BigBangAnimation({ onComplete }) {
       containerRef.current.appendChild(renderer.domElement);
 
       // Aggiungiamo OrbitControls per permettere all'utente di esplorare la scena
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true; // Movimento camera più fluido
       controls.dampingFactor = 0.05;
       // Manteniamo i controlli attivi per consentire all'utente di esplorare la scena
@@ -62,10 +67,10 @@ export default function BigBangAnimation({ onComplete }) {
       scene.add(pointLight);
 
       // Configuriamo il post-processing usando EffectComposer e aggiungiamo un bloom pass per simulare luce volumetrica
-      composer = new THREE.EffectComposer(renderer);
-      let renderPass = new THREE.RenderPass(scene, camera);
+      composer = new EffectComposer(renderer);
+      let renderPass = new RenderPass(scene, camera);
       composer.addPass(renderPass);
-      let bloomPass = new THREE.UnrealBloomPass(
+      let bloomPass = new UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
         1.5, // intensità
         0.4, // raggio
@@ -329,28 +334,12 @@ export default function BigBangAnimation({ onComplete }) {
   };
 
   useEffect(() => {
-    // Referenza alla funzione di cleanup
     let cleanupFn = null;
-    
-    // Verifichiamo se THREE è disponibile prima di inizializzare
-    const checkAndInitThree = () => {
-      if (window.THREE && 
-          window.THREE.EffectComposer && 
-          window.THREE.OrbitControls) {
-        // Tutti gli script necessari sono caricati
-        const cleanupRef = initAnimation();
-        if (typeof cleanupRef === 'function') {
-          cleanupFn = cleanupRef;
-        }
-      } else {
-        // Ricontrolliamo tra 100ms
-        setTimeout(checkAndInitThree, 100);
-      }
-    };
-    
-    // Inizia il controllo dopo un breve ritardo
-    setTimeout(checkAndInitThree, 500);
-    
+    // Inizializza direttamente l'animazione
+    const cleanupRef = initAnimation();
+    if (typeof cleanupRef === 'function') {
+      cleanupFn = cleanupRef;
+    }
     // Cleanup solo quando il componente viene smontato
     return () => {
       if (cleanupFn) {
@@ -360,32 +349,14 @@ export default function BigBangAnimation({ onComplete }) {
   }, []);
 
   return (
-    <>
-      {/* Script necessari per Three.js */}
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" strategy="beforeInteractive" />
-      
-      {/* Shaders */}
-      <Script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js" strategy="afterInteractive" />
-      <Script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js" strategy="afterInteractive" />
-      
-      {/* Post-processing */}
-      <Script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js" strategy="afterInteractive" />
-      <Script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js" strategy="afterInteractive" />
-      <Script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js" strategy="afterInteractive" />
-      <Script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js" strategy="afterInteractive" />
-      
-      {/* Controls */}
-      <Script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" strategy="afterInteractive" />
-      
-      <div ref={containerRef} style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        width: '100%', 
-        height: '100%',
-        background: 'black', 
-        zIndex: 9990 
-      }} />
-    </>
+    <div ref={containerRef} style={{ 
+      position: 'fixed', 
+      top: 0, 
+      left: 0, 
+      width: '100%', 
+      height: '100%',
+      background: 'black', 
+      zIndex: 9990 
+    }} />
   );
 }

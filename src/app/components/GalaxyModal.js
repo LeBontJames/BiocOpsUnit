@@ -194,31 +194,33 @@ void main() {
             background: "#000"
           }}
         />
-        <button
-          className="blackhole-modal-close"
-          onClick={onClose}
-          style={{
-            position: "fixed",
-            top: 10,
-            right: 10,
-            zIndex: 10000,
-            background: "rgba(0,0,0,0.7)",
-            color: "#fff",
+      </div>
+      <button
+        className="blackhole-modal-close"
+        onClick={onClose}
+        style={{
+          position: "fixed",
+          top: 18,
+          right: 18,
+          zIndex: 10001,
+          background: "rgba(0,0,0,0.7)",
+          color: "#fff",
             border: "none",
             borderRadius: "50%",
-            width: 48,
-            height: 48,
-            fontSize: "2rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer"
-          }}
-          aria-label="Chiudi"
-        >
-          &#10005;
-        </button>
-      </div>
+          width: 28,
+          height: 28,
+          fontSize: "1.8rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          padding: 0
+        }}
+        aria-label="Chiudi"
+        tabIndex={0}
+      >
+        &#10005;
+      </button>
     </div>
   );
 };

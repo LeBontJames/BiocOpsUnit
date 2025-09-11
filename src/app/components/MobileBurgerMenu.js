@@ -93,17 +93,15 @@ export default function MobileBurgerMenu({ hide = false }) {
             HOME
           </a>
           <a href="#" className="mobile-menu-link" onClick={handleLinkClick}>
-            RISULTATI
+            COLLEZIONE
           </a>
           <a href="#" className="mobile-menu-link" onClick={handleLinkClick}>
-            TORNEI
+            EXPLORE
           </a>
           <a href="#" className="mobile-menu-link" onClick={handleLinkClick}>
             PROSSIMAMENTE
           </a>
-          <a href="#" className="mobile-menu-link" onClick={handleLinkClick}>
-            LIVE
-          </a>
+          
         </div>
       </div>
 

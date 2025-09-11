@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 
-export default function GeoIcons() {
+export default function GeoIcons({ paused, onModalChange }) {
+// Duplicato rimosso
   const [modalOpen, setModalOpen] = useState(false);
   const [activeMedia, setActiveMedia] = useState({
     type: null, // 'video' o 'image'
@@ -22,6 +23,7 @@ export default function GeoIcons() {
 
   // Gestisce l'apertura del modal
   const openModal = (type, src, message, autoclose, event) => {
+    if (paused) return; // Blocca interazione se in pausa
     // Protezione contro clic multipli o aperture durante animazioni
     if (modalOpen || isProcessingClick) return;
     setIsProcessingClick(true);
@@ -53,6 +55,9 @@ export default function GeoIcons() {
     timeoutRef.current = setTimeout(() => {
       setModalOpen(true);
       document.body.classList.add("modal-open");
+      if (typeof onModalChange === "function") {
+        onModalChange(true);
+      }
       
       // Preparazione per il media (video o immagine)
       if (type === "video" && videoRef.current) {
@@ -107,6 +112,9 @@ export default function GeoIcons() {
     
     setModalOpen(false);
     setIsAnimating(false);
+    if (typeof onModalChange === "function") {
+      onModalChange(false);
+    }
     // Reset della posizione del messaggio allo stato iniziale
     setMessagePosition('initial');
     document.body.classList.remove("modal-open");
@@ -173,14 +181,16 @@ export default function GeoIcons() {
   // Assicura che il video parta in autoplay quando il modal si apre
   useEffect(() => {
     if (modalOpen && activeMedia.type === "video" && videoRef.current) {
-      // Avvia il video immediatamente, senza ritardo
-      videoRef.current.play().catch((err) => {
-        console.warn("Autoplay fallito:", err);
-        // Se l'autoplay fallisce, riproviamo una volta
-        setTimeout(() => {
-          videoRef.current?.play().catch(e => console.warn("Secondo tentativo fallito:", e));
-        }, 50);
-      });
+      if (paused) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play().catch((err) => {
+          console.warn("Autoplay fallito:", err);
+          setTimeout(() => {
+            videoRef.current?.play().catch(e => console.warn("Secondo tentativo fallito:", e));
+          }, 50);
+        });
+      }
 
       // Aggiungi event listener per la fine del video
       const videoElement = videoRef.current;
@@ -193,7 +203,7 @@ export default function GeoIcons() {
         videoElement.removeEventListener("ended", handleVideoEnd);
       };
     }
-  }, [modalOpen, activeMedia]);
+  }, [modalOpen, activeMedia, paused]);
   
   // Gestisce il posizionamento del messaggio in base allo stato
   useEffect(() => {
@@ -222,12 +232,11 @@ export default function GeoIcons() {
     <>
       {/* Icona 1 */}
       <button
-        className="geo-icon"
+        className={`geo-icon${paused ? " geo-icon--paused" : ""}`}
         aria-label="Apri video geolocalizzazione"
-        style={{ top: "26%", left: "26%" }} /* Posizione originale ripristinata */
-        onClick={(e) =>
-          openModal("video", "/video.mp4", "Colombia, Sud America", null, e)
-        }
+        style={{ top: "26%", left: "26%" }}
+        onClick={(e) => openModal("video", "/video.mp4", "Colombia, Sud America", null, e)}
+        disabled={paused}
       >
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path
@@ -239,12 +248,11 @@ export default function GeoIcons() {
 
       {/* Icona 2 */}
       <button
-        className="geo-icon"
+        className={`geo-icon${paused ? " geo-icon--paused" : ""}`}
         aria-label="Apri video geolocalizzazione 2"
-        style={{ top: "17%", left: "15%" }} /* Posizione originale ripristinata */
-        onClick={(e) =>
-          openModal("image", "/lacucina.jpeg", "Head Quarter", "3000", e)
-        }
+        style={{ top: "17%", left: "15%" }}
+        onClick={(e) => openModal("image", "/lacucina.jpeg", "Head Quarter", "3000", e)}
+        disabled={paused}
       >
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path

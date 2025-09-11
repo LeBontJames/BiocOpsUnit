@@ -72,10 +72,10 @@ export default function BurgerMenu() {
   // Navigazione mobile
   const mobileLinks = [
     { href: "#", text: "HOME" },
-    { href: "#", text: "RISULTATI" },
-    { href: "#", text: "TORNEI" },
+    { href: "#", text: "COLLEZIONE" },
+    { href: "#", text: "EXPLORE" },
     { href: "#", text: "PROSSIMAMENTE" },
-    { href: "#", text: "LIVE" },
+  
   ];
 
   if (!isVisible) {
