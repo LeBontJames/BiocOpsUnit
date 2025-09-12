@@ -69,8 +69,6 @@ export default function SpiralGalaxy({
   let lastTime = 0;
   let time = 0;
   let galaxyRotation = 0;
-  // Variabile per effetto scala
-  let scale = 1;
 
     const animate = (timestamp) => {
       if (paused) {
@@ -84,25 +82,10 @@ export default function SpiralGalaxy({
       lastTime = timestamp;
       time += deltaTime * 0.001;
 
-      // Effetto scala ogni 3 secondi
-      const scalePeriod = 3.0;
-  const scaleDuration = 1.2;
-      const scaleMax = 1.4;
-      const scaleMin = 1.0;
-      const modTime = time % scalePeriod;
-      if (modTime < scaleDuration) {
-        // Ease in-out simmetrica su tutta la durata
-        const t = modTime / scaleDuration;
-        scale = scaleMin + (scaleMax - scaleMin) * (0.5 - 0.5 * Math.cos(Math.PI * 2 * t));
-      } else {
-        scale = scaleMin;
-      }
+      // Nessuna animazione di scala
 
-      ctx.clearRect(0, 0, width, height);
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.scale(scale, scale);
-      ctx.translate(-centerX, -centerY);
+  ctx.clearRect(0, 0, width, height);
+  // Disegno normale, nessuna scala
 
       // ruota la galassia globalmente
       galaxyRotation += rotationSpeed * deltaTime * 0.05;
@@ -119,7 +102,7 @@ export default function SpiralGalaxy({
         const x = centerX + Math.cos(angle) * p.distance;
         const y = centerY + Math.sin(angle) * p.distance;
 
-        const armPhase = (time * 0.5 + p.armIndex / spiralArms) % 1;
+  const armPhase = (time * 0.25 + p.armIndex / spiralArms) % 1;
         const pulseFactor = Math.sin(armPhase * Math.PI * 2) * 0.3 + 0.7;
 
         const finalOpacity = p.opacity * pulseFactor;

@@ -75,6 +75,13 @@ export default function Home() {
             priority
             className="home-logo"
             id="home-logo"
+            onClick={() => {
+              const homeSection = document.querySelector('.home-section');
+              if (homeSection) {
+                homeSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            style={{ cursor: 'pointer' }}
           />
         </div>
         {/* Video Sequenza 01 cliccabile per aprire l'animazione, ora fuori dal logo */}
@@ -94,7 +101,7 @@ export default function Home() {
                 onClick={() => setShowNebula(true)}
                 aria-label="Apri animazione galassia"
               >
-                  <SpiralGalaxy width={90} height={90} particleCount={100} maxRadius={20} spiralArms={3} rotationSpeed={0.01} paused={showNebula || discoverOpen || geoModalOpen} />
+                  <SpiralGalaxy width={90} height={90} particleCount={200} maxRadius={20} spiralArms={3} rotationSpeed={0.01} paused={showNebula || discoverOpen || geoModalOpen} />
               </div>
             )}
             {/* Geo Icons visibili solo nella home section */}
@@ -160,6 +167,9 @@ export default function Home() {
               }}
             />
           </div>
+          <div className="scroll-indicator">
+            TAP FOR BIOC OPS UNIT
+          </div>
         </section>
         <section className="scroll-section fourth-section">
           {/* Sfondo scimmie 2.png (quarta sezione identica) */}
@@ -183,6 +193,9 @@ export default function Home() {
                 marginTop: "0px"
               }}
             />
+          </div>
+          <div className="scroll-indicator">
+            TAP FOR BIOC MEMBERS
           </div>
         </section>
       </ScrollContainer>
