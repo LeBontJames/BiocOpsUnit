@@ -101,7 +101,7 @@ export default function Home() {
                 onClick={() => setShowNebula(true)}
                 aria-label="Apri animazione galassia"
               >
-                  <SpiralGalaxy width={90} height={90} particleCount={200} maxRadius={20} spiralArms={3} rotationSpeed={0.01} paused={showNebula || discoverOpen || geoModalOpen} />
+                  <SpiralGalaxy width={90} height={90} particleCount={150} maxRadius={20} spiralArms={3} rotationSpeed={0.01} paused={showNebula || discoverOpen || geoModalOpen} />
               </div>
             )}
             {/* Geo Icons visibili solo nella home section */}
@@ -114,6 +114,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+        
         
         <section className="scroll-section second-section">
           <div className="h-screen w-screen relative">
@@ -196,6 +197,61 @@ export default function Home() {
           </div>
           <div className="scroll-indicator">
             TAP FOR BIOC MEMBERS
+          </div>
+        </section>
+
+        <section className="scroll-section fifth-section">
+          {/* Sfondo tatuatrice nello spazio cosmico (quinta sezione) */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1,
+            overflow: "hidden"
+          }}>
+            <img
+              src="/Scimmia tatuatrice nello spazio cosmico.png"
+              alt="Tatuatrice nello spazio cosmico"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: 1,
+                marginTop: "0px"
+              }}
+            />
+          </div>
+          <div className="scroll-indicator">
+            TAP FOR BIOC COLLAB
+          </div>
+        </section>
+        <section className="scroll-section sixth-section">
+          {/* Sfondo identico alla quinta sezione */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1,
+            overflow: "hidden"
+          }}>
+            <img
+              src="/Scimmia gang.png"
+              alt="Tatuatrice nello spazio cosmico"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: 1,
+                marginTop: "-10px"
+              }}
+            />
+          </div>
+          <div className="scroll-indicator">
+            TAP FOR MORE BIOC INFO
           </div>
         </section>
       </ScrollContainer>

@@ -22,7 +22,7 @@ export default function BigBangAnimation({ onComplete }) {
     let particleSystem, particlePositions, particleVelocities;
     let galaxySystem = null; // Conterrà il cluster galattico (aggiunto dopo)
     let nebula = null; // Conterrà lo sfondo nebuloso (aggiunto dopo)
-    let particleCount = 15000; // Numero di particelle per l'esplosione del Big Bang
+    let particleCount = 5000; // Numero di particelle per l'esplosione del Big Bang
     let params; // Oggetto per memorizzare i parametri controllati dall'UI
     let clock = new THREE.Clock(); // Orologio per tenere traccia del tempo trascorso
     let animationFrameId; // Per gestire l'animazione

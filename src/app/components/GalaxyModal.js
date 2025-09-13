@@ -200,8 +200,8 @@ void main() {
         onClick={onClose}
         style={{
           position: "fixed",
-          top: 18,
-          right: 18,
+          top: 5,
+          right: 5,
           zIndex: 10001,
           background: "rgba(0,0,0,0.7)",
           color: "#fff",

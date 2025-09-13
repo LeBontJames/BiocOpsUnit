@@ -26,6 +26,21 @@ export default function ScrollContainer({ children, showGalaxy }) {
   const thirdSectionTop = thirdSection ? thirdSection.offsetTop : secondSectionTop + secondSectionHeight;
   const thirdSectionHeight = thirdSection ? thirdSection.offsetHeight : viewportHeight;
 
+  // Calcola posizione e altezza reale della quarta sezione
+  const fourthSection = document.querySelector('.fourth-section');
+  const fourthSectionTop = fourthSection ? fourthSection.offsetTop : thirdSectionTop + thirdSectionHeight;
+  const fourthSectionHeight = fourthSection ? fourthSection.offsetHeight : viewportHeight;
+
+  // Calcola posizione e altezza reale della quinta sezione
+  const fifthSection = document.querySelector('.fifth-section');
+  const fifthSectionTop = fifthSection ? fifthSection.offsetTop : fourthSectionTop + fourthSectionHeight;
+  const fifthSectionHeight = fifthSection ? fifthSection.offsetHeight : viewportHeight;
+
+    // Calcola posizione e altezza reale della sesta sezione
+    const sixthSection = document.querySelector('.sixth-section');
+    const sixthSectionTop = sixthSection ? sixthSection.offsetTop : fifthSectionTop + fifthSectionHeight;
+    const sixthSectionHeight = sixthSection ? sixthSection.offsetHeight : viewportHeight;
+
       const currentScroll = container.scrollTop;
 
       let percentage = 0;
@@ -62,12 +77,51 @@ export default function ScrollContainer({ children, showGalaxy }) {
         } else {
           rotation = 720 + percentage * 360; // da 720° a 1080°
         }
-        scale = 0.6 - percentage * 0.2;    // da 0.6 a 0.4
+          scale = 0.6 ; // transizione da 0.6 a 0.4 nella terza sezione
         setIsInHomeSection(false);
+      } else if (currentScroll < fourthSectionTop + fourthSectionHeight) {
+        // Quarta sezione
+        const fourthScroll = currentScroll - fourthSectionTop;
+        percentage = Math.min(Math.max(fourthScroll / fourthSectionHeight, 0), 1);
+        if (percentage === 0) {
+          rotation = 1080;
+        } else if (percentage === 1) {
+          rotation = 1440;
+        } else {
+          rotation = 1080 + percentage * 360; // da 1080° a 1440°
+        }
+          scale = 0.6; // scala fissa, uguale alla scala finale della terza sezione
+        setIsInHomeSection(false);
+      } else if (currentScroll < fifthSectionTop + fifthSectionHeight) {
+        // Quinta sezione: solo rotazione, scala fissa
+        const fifthScroll = currentScroll - fifthSectionTop;
+        percentage = Math.min(Math.max(fifthScroll / fifthSectionHeight, 0), 1);
+        if (percentage === 0) {
+          rotation = 1440;
+        } else if (percentage === 1) {
+          rotation = 1800;
+        } else {
+          rotation = 1440 + percentage * 360; // da 1440° a 1800°
+        }
+  scale = 0.6; // scala fissa, non viene più ridotta
+        setIsInHomeSection(false);
+        } else if (currentScroll < sixthSectionTop + sixthSectionHeight) {
+          // Sesta sezione: stessa logica della quinta
+          const sixthScroll = currentScroll - sixthSectionTop;
+          percentage = Math.min(Math.max(sixthScroll / sixthSectionHeight, 0), 1);
+          if (percentage === 0) {
+            rotation = 1800;
+          } else if (percentage === 1) {
+            rotation = 2160;
+          } else {
+            rotation = 1800 + percentage * 360; // da 1800° a 2160°
+          }
+          scale = 0.6; // scala fissa, come la quinta sezione
+          setIsInHomeSection(false);
       } else {
-        // Dopo la terza sezione
-        rotation = 1080;
-        scale = 0.4;
+        // Dopo la quinta sezione
+    rotation = 2160;
+    scale = 0.0;
         setIsInHomeSection(false);
       }
 
